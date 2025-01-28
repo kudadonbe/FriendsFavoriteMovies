@@ -8,11 +8,25 @@
 import SwiftUI
 
 struct MovieDetail: View {
+    @Bindable var movie: Movie
+    
+    
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        Form {
+            TextField("Title", text: $movie.title)
+                .autocorrectionDisabled(true)
+            DatePicker("Release Date", selection: $movie.releaseDate, displayedComponents: .date)
+        }
+        .navigationTitle("Movie")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
-    MovieDetail()
+    NavigationStack {
+        MovieDetail(movie: SampleData.shared.movie)
+    }
+    
 }
