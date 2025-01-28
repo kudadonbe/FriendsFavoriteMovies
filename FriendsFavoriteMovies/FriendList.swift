@@ -22,11 +22,17 @@ struct FriendList: View {
         
                     }
                 }
+                .onDelete(perform: deleteFriend(indexes:))
             }
             .navigationTitle("Friends")
             .toolbar {
-                ToolbarItem{
+                
+                ToolbarItem {
                     Button("Add friend", systemImage: "plus", action: addFriend)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
                 }
             }
             
@@ -40,6 +46,11 @@ struct FriendList: View {
     
     private func addFriend () {
         context.insert(Friend(name: "New Friend"))
+    }
+    private func deleteFriend(indexes: IndexSet) {
+        for index in indexes {
+            context.delete(friends[index])
+        }
     }
 }
 
