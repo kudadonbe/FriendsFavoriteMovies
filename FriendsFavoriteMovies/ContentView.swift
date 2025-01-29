@@ -15,7 +15,8 @@ struct ContentView: View {
           }
           Tab("Cinema", systemImage: "movieclapper"){
               
-              MovieList()
+//              MovieList()
+              FilteredMovieList()
               
           }
         }
@@ -26,3 +27,4 @@ struct ContentView: View {
     ContentView()
         .modelContainer(SampleData.shared.modelContainer)
 }
+

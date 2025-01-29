@@ -10,19 +10,29 @@ import SwiftData
 
 struct FriendList: View {
     @Query(sort: \Friend.name) private var friends: [Friend]
+    
     @Environment(\.modelContext) private var context
+    
+    @State private var newFriend: Friend?
     
     var body: some View {
         NavigationSplitView {
-            List {
+            
+            Group {
+                if !friends.isEmpty {
+                    List {
+                        
+                        ForEach(friends) { friend in
+                            NavigationLink(friend.name) {
+                                FriendDetail(friend: friend)
                 
-                ForEach(friends) { friend in
-                    NavigationLink(friend.name) {
-                        FriendDetail(friend: friend)
-        
+                            }
+                        }
+                        .onDelete(perform: deleteFriend(indexes:))
                     }
+                } else {
+                    ContentUnavailableView("Add Friends", systemImage: "person.and.person")
                 }
-                .onDelete(perform: deleteFriend(indexes:))
             }
             .navigationTitle("Friends")
             .toolbar {
@@ -35,6 +45,12 @@ struct FriendList: View {
                     EditButton()
                 }
             }
+            .sheet(item: $newFriend) { friend in
+                NavigationStack {
+                    FriendDetail(friend: friend, isNew: true)
+                }
+                .interactiveDismissDisabled()
+            }
             
         } detail: {
             Text("Select a friend")
@@ -45,8 +61,11 @@ struct FriendList: View {
     }
     
     private func addFriend () {
-        context.insert(Friend(name: "New Friend"))
+        let newFriend = Friend(name: "")
+        context.insert(newFriend)
+        self.newFriend = newFriend
     }
+    
     private func deleteFriend(indexes: IndexSet) {
         for index in indexes {
             context.delete(friends[index])
@@ -58,4 +77,9 @@ struct FriendList: View {
     FriendList()
         .modelContainer(SampleData.shared.modelContainer)
             
+}
+
+#Preview("Empty List") {
+    FriendList()
+        .modelContainer(for: Friend.self, inMemory: true)
 }
